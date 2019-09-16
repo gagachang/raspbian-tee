@@ -65,6 +65,19 @@
 	}
 }
 
+[ -f "./dl/optee_test.tar.gz" ] && {
+    echo  "\033[32moptee_test package existed.\n\033[0m"
+} || {
+    echo  "\033[32moptee_test downloading...\n\033[0m"
+    wget -O dl/optee_test.tar.gz https://github.com/OP-TEE/optee_test/archive/3.3.0.tar.gz
+}
+
+[ ! -d "./optee_test" ] && {
+    tar zxf dl/optee_test.tar.gz && {
+        mv optee_test-* optee_test
+    }
+}
+
 [ -f "./dl/optee_examples.tar.gz" ] && {
 	echo  "\033[32moptee_examples package existed.\n\033[0m"
 } || {
