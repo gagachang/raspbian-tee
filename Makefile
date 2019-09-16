@@ -5,6 +5,7 @@ TEE_SDK_DIR = $(shell pwd)
 
 all: arm-tf-final optee-client-final optee-examples-final linux-final boot-final
 
+# test 
 ################################################################################
 # ARM Trust Firmware
 ################################################################################
