@@ -3,9 +3,8 @@ include ${TEE_SDK_DIR}/config.mk
 
 TEE_SDK_DIR = $(shell pwd)
 
-all: arm-tf-final optee-client-final optee-examples-final linux-final boot-final
+all: arm-tf-final optee-client-final xtest-final optee-examples-final linux-final boot-final
 
-# test 
 ################################################################################
 # ARM Trust Firmware
 ################################################################################
@@ -111,11 +110,32 @@ optee-client-clean:
 clean
 
 
-clean: arm-tf-clean u-boot-clean optee-os-clean optee-client-clean
+clean: arm-tf-clean u-boot-clean optee-os-clean optee-client-clean xtest-clean
 .PHONY: clean
 
 install:
 .PHONY: install
+
+################################################################################
+# xtest / OP-TEE test
+################################################################################
+XTEST_FLAGS ?= CROSS_COMPILE_HOST=$(CROSS_COMPILE) \
+			   CROSS_COMPILE_TA=$(CROSS_COMPILE) \
+			   TA_DEV_KIT_DIR=${TEE_SDK_DIR}/optee_os/out/arm/export-ta_arm32 \
+			   OPTEE_CLIENT_EXPORT=${TEE_SDK_DIR}/optee_client/out/export \
+			   COMPILE_NS_USER=32 \
+			   O=$(TEE_SDK_DIR)/optee_test/out CFG_ARM32_core=y
+
+.PHONY: xtest
+xtest:
+	$(MAKE) -C ${TEE_SDK_DIR}/optee_test $(XTEST_FLAGS)
+
+.PHONY: xtest-clean
+xtest-clean:
+	$(MAKE) -C ${TEE_SDK_DIR}/optee_test clean
+
+.PHONY: xtest-final
+xtest-final: xtest
 
 ################################################################################
 # OP-TEE examples
