@@ -122,9 +122,10 @@ install:
 XTEST_FLAGS ?= CROSS_COMPILE_HOST=$(CROSS_COMPILE) \
 			   CROSS_COMPILE_TA=$(CROSS_COMPILE) \
 			   TA_DEV_KIT_DIR=${TEE_SDK_DIR}/optee_os/out/arm/export-ta_arm32 \
-			   OPTEE_CLIENT_EXPORT=${TEE_SDK_DIR}/optee_client/out/export \
+			   OPTEE_CLIENT_EXPORT=${TEE_SDK_DIR}/optee_client/out/export/usr \
 			   COMPILE_NS_USER=32 \
-			   O=$(TEE_SDK_DIR)/optee_test/out CFG_ARM32_core=y
+			   V=1 \
+			   O=$(TEE_SDK_DIR)/optee_test/out
 
 .PHONY: xtest
 xtest:
@@ -136,6 +137,21 @@ xtest-clean:
 
 .PHONY: xtest-final
 xtest-final: xtest
+	cp ${TEE_SDK_DIR}/optee_test/out/xtest/xtest ./out/rootfs/bin/
+	cp ${TEE_SDK_DIR}/optee_test/out/ta/aes_perf/*.ta ./out/rootfs/lib/optee_armtz/
+	cp ${TEE_SDK_DIR}/optee_test/out/ta/concurrent/*.ta ./out/rootfs/lib/optee_armtz/
+	cp ${TEE_SDK_DIR}/optee_test/out/ta/concurrent_large/*.ta ./out/rootfs/lib/optee_armtz/
+	cp ${TEE_SDK_DIR}/optee_test/out/ta/create_fail_test/*.ta ./out/rootfs/lib/optee_armtz/
+	cp ${TEE_SDK_DIR}/optee_test/out/ta/crypt/*.ta ./out/rootfs/lib/optee_armtz/
+	cp ${TEE_SDK_DIR}/optee_test/out/ta/os_test/*.ta ./out/rootfs/lib/optee_armtz/
+	cp ${TEE_SDK_DIR}/optee_test/out/ta/os_test_lib/*.ta ./out/rootfs/lib/optee_armtz/
+	cp ${TEE_SDK_DIR}/optee_test/out/ta/rpc_test/*.ta ./out/rootfs/lib/optee_armtz/
+	cp ${TEE_SDK_DIR}/optee_test/out/ta/sha_perf/*.ta ./out/rootfs/lib/optee_armtz/
+	cp ${TEE_SDK_DIR}/optee_test/out/ta/sims/*.ta ./out/rootfs/lib/optee_armtz/
+	cp ${TEE_SDK_DIR}/optee_test/out/ta/socket/*.ta ./out/rootfs/lib/optee_armtz/
+	cp ${TEE_SDK_DIR}/optee_test/out/ta/storage/*.ta ./out/rootfs/lib/optee_armtz/
+	cp ${TEE_SDK_DIR}/optee_test/out/ta/storage2/*.ta ./out/rootfs/lib/optee_armtz/
+	cp ${TEE_SDK_DIR}/optee_test/out/ta/storage_benchmark/*.ta ./out/rootfs/lib/optee_armtz/
 
 ################################################################################
 # OP-TEE examples
@@ -144,7 +160,7 @@ xtest-final: xtest
 optee-examples:
 	$(MAKE) -C ${TEE_SDK_DIR}/optee_examples \
 HOST_CROSS_COMPILE=${CROSS_COMPILE} \
-TEEC_EXPORT=${TEE_SDK_DIR}/optee_client/out/export \
+TEEC_EXPORT=${TEE_SDK_DIR}/optee_client/out/export/usr \
 TA_DEV_KIT_DIR=${TEE_SDK_DIR}/optee_os/out/arm/export-ta_arm32
 
 .PHONY: optee-examples-final
